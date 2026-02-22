@@ -1,5 +1,44 @@
 services:
+  bike-api:
+    build: 
+      context: .
+      dockerfile: ./src/api/Dockerfile
+    container_name: bike-api
+    ports:
+      - "8080:8080"
+      
   evaluation:
     build: ./src/evaluation
     depends_on:
       - bike-api
+
+  prometheus:
+    image: prom/prometheus:v2.53.0
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./deployment/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./deployment/prometheus/rules:/etc/prometheus/rules:ro
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+    depends_on:
+      - bike-api
+      - node-exporter
+
+  node-exporter:
+    image: prom/node-exporter:v1.8.1
+    container_name: node-exporter
+    ports:
+      - "9100:9100"
+
+  grafana:
+    image: grafana/grafana:11.0.0
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./deployment/grafana/dashboards:/var/lib/grafana/dashboards
+      - ./deployment/grafana/provisioning:/etc/grafana/provisioning
+    depends_on:
+      - prometheus

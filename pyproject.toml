@@ -1,0 +1,16 @@
+[project]
+name = "mlops-promgraf"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "evidently>=0.7.20",
+    "fastapi>=0.125.0",
+    "pandas>=3.0.1",
+    "prometheus-client>=0.24.1",
+    "pydantic<2",
+    "requests>=2.32.5",
+    "scikit-learn>=1.8.0",
+    "uvicorn>=0.41.0",
+]
